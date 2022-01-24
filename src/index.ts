@@ -1,15 +1,31 @@
 import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import * as routes from './routes';
+import * as dbConnection from '../database/connection';
 
 const app = express();
 
-const port = process.env.PORT || 3000;
+const port = process.env.APP_PORT || 3000;
 
-// define a route handler for the default home page
-app.get( "/", ( req, res ) => {
-    res.send( "Hello world!" );
-} );
+// Set up CORS
+const allowedOrigins = ['http://localhost:3000'];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins
+};
+
+app.use(cors(options));
+
+app.use(express.json());
+
+// Register routes
+routes.register(app);
+
+// Init DB connection
+dbConnection.connectDB();
 
 // start the Express server
 app.listen( port, () => {
     console.log( `server started at http://localhost:${ port }` );
-} );
+});
