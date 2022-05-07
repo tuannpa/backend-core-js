@@ -5,6 +5,6 @@ import {MongooseService} from "./src/services/mongoose.service";
 
 // Bind the services below
 const myContainer = new Container();
-myContainer.bind<IDatabaseService>(TYPES.IDatabaseService).to(MongooseService);
+myContainer.bind<IDatabaseService>(TYPES.IDatabaseService).to(MongooseService); // If you wish to switch to a new DB, simply change the instance here
 
 export { myContainer };
