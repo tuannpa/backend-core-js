@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import * as routes from './routes';
-import * as dbConnection from '../database/connection';
+import {myContainer} from "../inversify.config";
+import {IDatabaseService} from "./interfaces/database.interface";
+import {TYPES} from "./services/types/types";
 
 const app = express();
 
@@ -19,13 +21,14 @@ app.use(cors(options));
 
 app.use(express.json());
 
-// Register routes
-routes.register(app);
-
 // Init DB connection
-dbConnection.connectDB();
+const dbService = myContainer.get<IDatabaseService>(TYPES.IDatabaseService);
+dbService.connect().then(() => {
+    // Register routes
+    routes.register(app);
 
-// start the Express server
-app.listen( port, () => {
-    console.log( `server started at http://localhost:${ port }` );
+    // start the Express server
+    app.listen( port, () => {
+        console.log( `server started at http://localhost:${ port }` );
+    });
 });
